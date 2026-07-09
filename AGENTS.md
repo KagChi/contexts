@@ -197,6 +197,94 @@ Effective LTM queries:
 - Add **tags** for cross-cutting concerns (e.g., ["debugging", "performance"], ["authentication", "security"])
 - Keep memory content concise but complete - enough detail to be actionable
 
+### Session Summarization
+
+At the end of **every completed session**, summarize key outcomes and learnings to LTM for future reference.
+
+**When to Summarize:**
+- Session work is complete (features implemented, bugs fixed, research concluded)
+- Significant decisions were made or patterns discovered
+- New workflows or debugging solutions were established
+- Before closing a long-running or complex session
+
+**What to Capture:**
+
+Store separate memories for different aspects of the session:
+
+1. **Technical Outcomes**
+   - Features implemented or bugs fixed
+   - Code patterns or architectural decisions
+   - Configuration changes or tooling updates
+   - Test coverage additions
+
+2. **Process Learnings**
+   - Workflow optimizations discovered
+   - Build/test/deploy process insights
+   - Debugging approaches that worked
+   - Tool usage patterns (gh CLI, cargo, npm, etc.)
+
+3. **Project Context Updates**
+   - New dependencies or libraries added
+   - API contracts or interface changes
+   - Documentation updates
+   - Codebase structure changes
+
+**Summary Format:**
+
+Each memory should be concise but complete:
+```
+Content: "Implemented OAuth2 authentication using passport.js. Flow: user clicks login → redirects to provider → callback validates token → creates session. Config in config/auth.ts. Environment variables: GOOGLE_CLIENT_ID, GITHUB_CLIENT_ID, SESSION_SECRET. Tests in tests/auth/oauth.test.ts cover success and error cases."
+
+Tags: ["authentication", "oauth", "passport", "configuration"]
+Collection: "auth-system"
+Scope: "<repo-name>"
+```
+
+**Scope Guidelines:**
+- Repository-specific implementations → `scope: "<repo-name>"`
+- Reusable patterns or general workflows → `scope: "global"`
+
+**Efficiency Tips:**
+- Store 2-5 focused memories per session (avoid single monolithic summary)
+- Each memory addresses one topic: a feature, a pattern, a workflow, a decision
+- Use descriptive queries as memory content (makes future searches more effective)
+- Tag generously to enable discovery from multiple angles
+
+**Example Session Summary:**
+
+After implementing authentication system:
+```
+# Memory 1: Feature implementation
+ltm-mcp_store_memory(
+  content="OAuth2 authentication implemented with passport.js. Supports Google and GitHub providers. Configuration in config/auth.ts requires GOOGLE_CLIENT_ID, GITHUB_CLIENT_ID, SESSION_SECRET env vars. User flow: login button → provider redirect → callback validation → session creation. Tests cover success, failure, and token validation scenarios.",
+  tags=["authentication", "oauth", "passport", "implementation"],
+  collection="auth-system",
+  scope="contexts"
+)
+
+# Memory 2: Debugging solution
+ltm-mcp_store_memory(
+  content="OAuth redirect URI mismatch error resolved by ensuring callback URL in provider dashboard exactly matches app URL including port. Local dev uses http://localhost:3000/auth/callback. Production uses https://domain.com/auth/callback. Both must be registered.",
+  tags=["debugging", "oauth", "configuration"],
+  collection="troubleshooting",
+  scope="global"
+)
+
+# Memory 3: Testing pattern
+ltm-mcp_store_memory(
+  content="OAuth flow testing uses mock provider responses. Test setup in tests/helpers/auth-mocks.ts creates fake tokens and user profiles. Allows testing authentication logic without external API calls. Pattern: mock provider → test flow → verify session state.",
+  tags=["testing", "oauth", "mocking"],
+  collection="test-patterns",
+  scope="contexts"
+)
+```
+
+**Integration with Compress:**
+- Session summarization to LTM is separate from context compression
+- Compress manages conversation context window during active sessions
+- LTM stores distilled knowledge for cross-session continuity
+- Both serve context management but at different timescales
+
 ## Plan Files
 
 Agents should use plan files in `.opencode/plans/` to document multi-step work and maintain continuity across sessions.
