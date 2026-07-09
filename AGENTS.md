@@ -148,9 +148,118 @@ Effective LTM queries:
 - Add **tags** for cross-cutting concerns (e.g., ["debugging", "performance"], ["authentication", "security"])
 - Keep memory content concise but complete - enough detail to be actionable
 
+## Plan Files
+
+Agents should use plan files in `.opencode/plans/` to document multi-step work and maintain continuity across sessions.
+
+### When to Create Plan Files
+
+Create a plan file **only when the user explicitly requests planning**:
+- User says "create a plan", "let's plan this out", "make a plan first"
+- User asks to "break down" or "outline" a complex task before implementation
+- User requests a phased approach or multi-step strategy
+
+**Do not** create plan files automatically based on task complexity alone.
+
+### Session Start Discovery
+
+At the start of **every session**, check for active plan files:
+
+```bash
+ls .opencode/plans/
+```
+
+If plan files exist:
+1. Read each plan file to understand active work
+2. Reference plan context when making decisions
+3. The directory listing is the source of truth — files present = work not yet done
+
+### Plan File Format
+
+**Naming Convention:**
+```
+.opencode/plans/plan-<task-slug>.md
+```
+
+Examples:
+- `plan-add-oauth-support.md`
+- `plan-refactor-api-layer.md`
+- `plan-fix-authentication-bug.md`
+
+**Structure (Phase-style):**
+
+```markdown
+# Plan: Add OAuth Support
+
+## Objectives
+- Implement OAuth2 authentication flow
+- Support multiple providers (Google, GitHub)
+- Add comprehensive tests and documentation
+
+## Tasks
+- Research OAuth2 flow patterns and best practices
+- Implement OAuth2 provider interface
+- Add tests for OAuth flows
+- Update authentication documentation
+- Configure redirect URLs for each provider
+
+## Implementation Notes
+- Using passport.js for OAuth integration
+- Need environment variables for client IDs and secrets
+- Redirect URLs must be registered with each provider
+
+## Blockers / Decisions
+- Which OAuth providers to support initially? (Google + GitHub confirmed)
+- Session storage strategy? (Redis vs in-memory for development)
+```
+
+### Plan File Lifecycle
+
+**Creation:**
+1. User explicitly requests planning
+2. Agent creates `.opencode/plans/plan-<task-slug>.md`
+3. Agent populates plan with objectives, tasks, notes, and open questions
+4. Agent uses TodoWrite tool separately for task tracking (plan file is reference documentation only)
+
+**Maintenance:**
+- Keep plan files **separate** from TodoWrite todos
+- Plan file = reference documentation and strategic context
+- TodoWrite = operational task tracking
+- Update plan file's "Implementation Notes" and "Blockers / Decisions" sections as work progresses
+
+**Deletion:**
+When the planned work is complete:
+1. Verify all objectives accomplished
+2. Delete the plan file from `.opencode/plans/`
+3. File deletion signals phase completion
+
+### Plan Files vs TodoWrite
+
+**Plan Files:**
+- Strategic documentation
+- Phase objectives and context
+- Implementation notes and decisions
+- Blockers and open questions
+- Lives in `.opencode/plans/`
+- Created only when user requests planning
+
+**TodoWrite:**
+- Operational task tracking
+- Real-time status updates (pending, in_progress, completed)
+- Managed by OpenCode's todo system
+- Automatically tracked across sessions
+
+Both systems complement each other but serve different purposes.
+
 ## Parallel Agent Workflow
 
 When working on complex tasks with multiple independent components, split the work across parallel agents, each working in isolated git worktrees and creating separate PRs.
+
+**Plan File Integration:**
+- Check for active plan files in `.opencode/plans/` before decomposing tasks
+- If plan files exist, follow the objectives and task breakdown defined in them
+- Reference plan file context when spawning parallel agents
+- Update plan file's "Implementation Notes" section as parallel work progresses
 
 ### Task Decomposition
 
