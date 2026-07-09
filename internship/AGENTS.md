@@ -1,4 +1,24 @@
-Always call ltm-mcp_search_memories and search based on scope bmw-internship or by collection bmw-internship-rules and DO NOT CLEAN UP THIS CONTEXT.
+## MCP Tool Usage
+
+### LTM (Long-Term Memory)
+- **At conversation start**: Always search ltm-mcp_search_memories with scope `bmw-internship` or collection `bmw-internship-rules`
+- **After task completion**: Store summaries to collection `bmw-internship-daily-logs` with scope `bmw-internship`
+- **DO NOT CLEAN UP** LTM search results from context
+
+### Snipe-IT Asset Management
+- **Triggers**: When user mentions assets, inventory, hardware tracking, or NTUST labels
+- Use snipeit-mcp tools for asset CRUD operations, checkout/checkin, label extraction
+
+### Document Processing
+- **docx-mcp**: When working with Word documents (.docx)
+- **excel-mcp**: When working with Excel spreadsheets (.xlsx)
+- **pdf-reader**: When extracting data from PDFs or analyzing PDF documents
+
+### Web Automation
+- **fetcher-mcp**: When user needs browser automation, web scraping, or interactive web tasks
+
+### Code Search
+- **grep-mcp**: When searching for code examples across GitHub repositories (real-world usage patterns)
 
 ## Task Completion Logging
 
