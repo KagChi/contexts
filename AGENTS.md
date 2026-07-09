@@ -46,6 +46,51 @@ Before committing any changes, verify and run all applicable pre-commit checks:
 - Do not commit until all checks pass
 - If checks fail, fix the issues and re-run verification
 
+## Git Commit Policy
+
+**CRITICAL:** Never create commits without explicit user permission.
+
+### When to Commit
+
+Only create commits when the user explicitly requests it with clear instructions such as:
+- "commit this"
+- "commit these changes"
+- "make a commit"
+- "git commit"
+
+**Important:** Permission is per-commit only. Even if the user gave permission for a previous commit, you must ask again for the next one.
+
+### When NOT to Commit
+
+Do not commit when:
+- User says "continue", "go ahead", "proceed", "do it", "let's go" - these refer to the current operation (editing, building, testing), NOT committing
+- User approves a plan or implementation approach
+- You finish implementing changes
+- Pre-commit checks pass
+
+### Correct Workflow
+
+1. Make the changes (edit files, refactor code, etc.)
+2. Show the user what changed (with `git diff` if appropriate)
+3. **Stop and wait for explicit commit instruction**
+4. Only after user says "commit", then run `git commit`
+
+### Examples
+
+**Wrong:**
+```
+User: "let's go"
+Agent: [edits file] [commits without asking]
+```
+
+**Correct:**
+```
+User: "let's go"  
+Agent: [edits file] [shows diff] "Changes ready. Would you like me to commit?"
+User: "commit this"
+Agent: [commits]
+```
+
 ## Commit Message Format
 
 Always use Conventional Commits format for all commit messages.
