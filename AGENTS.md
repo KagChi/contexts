@@ -102,6 +102,55 @@ BREAKING CHANGE: v1 API endpoints have been removed. Migrate to v2.
 
 Agents should leverage LTM to maintain continuity across sessions and avoid redundant discovery work.
 
+### Session Initialization
+
+At the start of **every session**, proactively load context to establish situational awareness:
+
+**1. Discover Active Work**
+```bash
+ls .opencode/plans/
+```
+- If plan files exist, read them to understand active work
+- Plan files present = work not yet done (directory listing is source of truth)
+
+**2. Load Project Context from LTM**
+
+Search LTM with progressive specificity:
+
+```bash
+# Repository-specific context
+ltm-mcp_search_memories query="<repo-name>" scope="<repo-name>"
+
+# Project type and language patterns
+ltm-mcp_search_memories query="<language> <framework> workflows"
+
+# Common workflows and tooling
+ltm-mcp_search_memories query="git workflow pre-commit"
+```
+
+**Example queries for this project:**
+- `query="contexts" scope="contexts"` - Repository-specific patterns
+- `query="typescript npm workflows"` - Language-specific patterns
+- `query="opencode agent guidelines"` - Tool-specific patterns
+
+**3. Detect Project Type**
+
+Identify project configuration to determine available workflows:
+- Check for `package.json`, `Cargo.toml`, `pyproject.toml`, `go.mod`, etc.
+- Determine build tools, test runners, linters from config files
+- Load corresponding workflow memories from LTM
+
+**Why this matters:**
+- Avoids redundant discovery across sessions
+- Surfaces relevant patterns and decisions immediately
+- Establishes context before user states their intent
+- Reduces "cold start" exploration time
+
+**Context budget consideration:**
+- Session initialization should consume <5% of context budget
+- Load only actionable context (patterns, decisions, active work)
+- Detailed implementation can be queried later on-demand
+
 ### Search Before Acting
 
 Always search LTM before starting work on a task:
